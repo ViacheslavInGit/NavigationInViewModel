@@ -9,8 +9,6 @@ import androidx.navigation.findNavController
 import com.viach.navigationInViewModel.R
 import com.viach.navigationInViewModel.navigation.command.Back
 import com.viach.navigationInViewModel.navigation.command.To
-import com.viach.navigationInViewModel.navigation.command.ToWithArgs
-import timber.log.Timber
 
 abstract class NavigationFragment : Fragment() {
 
@@ -23,17 +21,11 @@ abstract class NavigationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         navigationViewModel.navigationCommands.observe(viewLifecycleOwner, Observer { command ->
-
-            Timber.d("### $command")
-
             when (command) {
                 is To -> {
-                    navController.navigate(command.screen.resId)
+                    navController.navigate(command.screen.resId, command.screen.bundle)
                 }
 
-                is ToWithArgs -> {
-                    navController.navigate(command.screen.resId, command.args)
-                }
                 is Back -> {
                     navController.popBackStack()
                 }

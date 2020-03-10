@@ -59,21 +59,4 @@ class SecondFragment : BaseFragment<SecondViewModel>() {
             navigationViewModel.navigateBack()
         })
     }
-
-    companion object {
-
-        fun createBundle(
-            name: String = "no name",
-            color: Int = -1
-        ): Bundle {
-
-            //use to safe args transfer
-            val args = SecondFragmentArgs(name = name, color = color)
-
-            return Bundle().apply {
-                putString("name", args.name)
-                putInt("color", args.color)
-            }
-        }
-    }
 }

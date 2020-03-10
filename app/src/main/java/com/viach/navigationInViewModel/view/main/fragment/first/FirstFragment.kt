@@ -9,11 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.viach.navigationInViewModel.R
-import com.viach.navigationInViewModel.navigation.Screen
+import com.viach.navigationInViewModel.navigation.SecondScreen
 import com.viach.navigationInViewModel.navigation.view.NavigationViewModel
 import com.viach.navigationInViewModel.view.BaseFragment
-import com.viach.navigationInViewModel.view.main.fragment.second.SecondFragment
-import com.viach.navigationInViewModel.view.main.fragment.second.SecondFragmentArgs
 import javax.inject.Inject
 
 class FirstFragment : BaseFragment<FirstViewModel>() {
@@ -22,8 +20,11 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val recyclerAdapter = ItemRecyclerAdapter { item ->
-        val bundle = SecondFragment.createBundle(name = item.name, color = item.color)
-        navigationViewModel.navigateToWithArgs(Screen.SECOND_SCREEN, bundle)
+
+        val screen = SecondScreen(
+            SecondScreen.createBundle(name = item.name, color = item.color)
+        )
+        navigationViewModel.navigateTo(screen)
     }
 
     override lateinit var navigationViewModel: NavigationViewModel
