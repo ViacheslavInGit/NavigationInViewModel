@@ -7,22 +7,20 @@ import com.viach.navigationInViewModel.view.main.fragment.second.SecondFragmentA
 
 sealed class Screen(@IdRes val resId: Int, val bundle: Bundle? = null)
 
-class FirstScreen(bundle: Bundle? = null) : Screen(R.id.firstFragment, bundle)
+class FirstScreen : Screen(R.id.firstFragment)
 
-class SecondScreen(bundle: Bundle? = null) : Screen(R.id.secondFragment, bundle) {
+class SecondScreen(bundle: Bundle) : Screen(R.id.secondFragment, bundle) {
 
-    companion object {
-        fun createBundle(
-            name: String = "no name",
-            color: Int = -1
-        ): Bundle {
-            //use to safe args transfer
-            val args = SecondFragmentArgs(name = name, color = color)
+    constructor(
+        name: String = "no name",
+        color: Int = -1
+    ) : this(Bundle().apply {
 
-            return Bundle().apply {
-                putString("name", args.name)
-                putInt("color", args.color)
-            }
-        }
-    }
+        //use to safe args transfer
+        val args = SecondFragmentArgs(name = name, color = color)
+
+        putString("name", args.name)
+        putInt("color", args.color)
+    })
+
 }

@@ -20,10 +20,7 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val recyclerAdapter = ItemRecyclerAdapter { item ->
-
-        val screen = SecondScreen(
-            SecondScreen.createBundle(name = item.name, color = item.color)
-        )
+        val screen = SecondScreen(name = item.name, color = item.color)
         navigationViewModel.navigateTo(screen)
     }
 
