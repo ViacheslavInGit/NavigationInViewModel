@@ -9,6 +9,7 @@ import androidx.navigation.findNavController
 import com.viach.navigationInViewModel.R
 import com.viach.navigationInViewModel.navigation.command.Back
 import com.viach.navigationInViewModel.navigation.command.To
+import com.viach.navigationInViewModel.navigation.command.ToWithArgs
 import timber.log.Timber
 
 abstract class NavigationFragment : Fragment() {
@@ -29,8 +30,16 @@ abstract class NavigationFragment : Fragment() {
                 is To -> {
                     navController.navigate(command.screen.resId)
                 }
+
+                is ToWithArgs -> {
+                    navController.navigate(command.screen.resId, command.args)
+                }
                 is Back -> {
                     navController.popBackStack()
+                }
+
+                else -> {
+                    throw RuntimeException("unhandled navigation command")
                 }
             }
         })

@@ -12,7 +12,8 @@ import com.viach.navigationInViewModel.R
 import com.viach.navigationInViewModel.navigation.Screen
 import com.viach.navigationInViewModel.navigation.view.NavigationViewModel
 import com.viach.navigationInViewModel.view.BaseFragment
-import timber.log.Timber
+import com.viach.navigationInViewModel.view.main.fragment.second.SecondFragment
+import com.viach.navigationInViewModel.view.main.fragment.second.SecondFragmentArgs
 import javax.inject.Inject
 
 class FirstFragment : BaseFragment<FirstViewModel>() {
@@ -20,8 +21,10 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var recyclerAdapter: ItemRecyclerAdapter
+    private val recyclerAdapter = ItemRecyclerAdapter { item ->
+        val bundle = SecondFragment.createBundle(name = item.name, color = item.color)
+        navigationViewModel.navigateToWithArgs(Screen.SECOND_SCREEN, bundle)
+    }
 
     override lateinit var navigationViewModel: NavigationViewModel
 
@@ -51,25 +54,14 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = recyclerAdapter
 
-        view.findViewById<View>(R.id.navigationImageView)
-            .setOnClickListener {
-                navigationViewModel.navigateTo(Screen.SECOND_SCREEN)
-            }
-
-
         observeViewModel()
     }
 
     private fun observeViewModel() {
-        navigationViewModel.backEvents.observe(viewLifecycleOwner, Observer {
-            Timber.d("### receive back")
-            /* nothing to do */
-        })
+        navigationViewModel.backEvents.observe(viewLifecycleOwner, Observer {/* ignore */ })
 
         viewModel.itemsLiveData.observe(viewLifecycleOwner, Observer { items ->
             recyclerAdapter.setItems(items)
         })
-
     }
-
 }

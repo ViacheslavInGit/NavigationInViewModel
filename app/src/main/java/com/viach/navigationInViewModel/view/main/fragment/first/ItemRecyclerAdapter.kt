@@ -7,9 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.viach.navigationInViewModel.R
 import com.viach.navigationInViewModel.domain.Item
-import javax.inject.Inject
 
-class ItemRecyclerAdapter @Inject constructor() : RecyclerView.Adapter<ItemViewHolder>() {
+class ItemRecyclerAdapter(
+    private val onItemClickListener: (Item) -> Unit
+) : RecyclerView.Adapter<ItemViewHolder>() {
 
     private var itemList: List<Item> = emptyList()
 
@@ -23,7 +24,7 @@ class ItemRecyclerAdapter @Inject constructor() : RecyclerView.Adapter<ItemViewH
             .from(parent.context)
             .inflate(R.layout.item_item, parent, false)
 
-        return ItemViewHolder(holderView)
+        return ItemViewHolder(holderView, onItemClickListener)
     }
 
     override fun getItemCount() = itemList.size
@@ -34,9 +35,22 @@ class ItemRecyclerAdapter @Inject constructor() : RecyclerView.Adapter<ItemViewH
 }
 
 
-class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ItemViewHolder(
+    itemView: View,
+    val onItemClickListener: (Item) -> Unit
+) : RecyclerView.ViewHolder(itemView) {
+
+    private var item: Item? = null
+
+    init {
+        itemView.setOnClickListener {
+            requireNotNull(item).also { onItemClickListener(it) }
+        }
+    }
 
     fun bind(item: Item) {
+        this.item = item
+
         itemView
             .findViewById<View>(R.id.itemRoot)
             .setBackgroundColor(item.color)

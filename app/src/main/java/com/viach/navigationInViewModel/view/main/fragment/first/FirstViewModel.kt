@@ -12,7 +12,6 @@ class FirstViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private var _itemsLiveData = MutableLiveData<List<Item>>()
-
     val itemsLiveData: LiveData<List<Item>> = _itemsLiveData
 
     fun updateItems() {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_navigatoin_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_navigatoin_graph"
     app:startDestination="@id/firstFragment">
 
     <fragment
@@ -10,5 +11,16 @@
     <fragment
         android:id="@+id/secondFragment"
         android:name="com.viach.navigationInViewModel.view.main.fragment.second.SecondFragment"
-        android:label="SecondFragment" />
+        android:label="SecondFragment">
+
+        <argument
+            android:name="name"
+            android:defaultValue="no name"
+            app:argType="string" />
+
+        <argument
+            android:name="color"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </fragment>
 </navigation>
