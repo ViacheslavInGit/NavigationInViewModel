@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_navigatoin_graph"
+    app:startDestination="@id/firstFragment">
+
+    <fragment
+        android:id="@+id/firstFragment"
+        android:name="com.viach.navigationInViewModel.view.main.fragment.first.FirstFragment"
+        android:label="FirstFragment" />
+    <fragment
+        android:id="@+id/secondFragment"
+        android:name="com.viach.navigationInViewModel.view.main.fragment.second.SecondFragment"
+        android:label="SecondFragment" />
+</navigation>
