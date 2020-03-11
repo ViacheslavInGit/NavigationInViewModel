@@ -46,7 +46,7 @@ class FakeItemRepository @Inject constructor() : ItemRepository {
                     )
                 }
             }
-            .delay(1, TimeUnit.SECONDS)
+            .delay(3, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 
