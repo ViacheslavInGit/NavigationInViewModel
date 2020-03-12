@@ -7,12 +7,13 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.viach.navigationInViewModel.R
-import com.viach.navigationInViewModel.navigation.command.Back
-import com.viach.navigationInViewModel.navigation.command.To
+import com.viach.navigationInViewModel.navigation.CommandExecutor
 
 abstract class NavigationFragment : Fragment() {
 
     abstract val navigationViewModel: NavigationViewModel
+
+    abstract val observeBackEvents: Boolean
 
     private val navController: NavController
         get() = requireActivity().findNavController(R.id.fragment_container)
@@ -20,20 +21,16 @@ abstract class NavigationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        navController.createDeepLink()
+
         navigationViewModel.navigationCommands.observe(viewLifecycleOwner, Observer { command ->
-            when (command) {
-                is To -> {
-                    navController.navigate(command.screen.resId, command.screen.bundle)
-                }
-
-                is Back -> {
-                    navController.popBackStack()
-                }
-
-                else -> {
-                    throw RuntimeException("unhandled navigation command")
-                }
-            }
+            command?.let { CommandExecutor.execute(it, navController) }
         })
+
+        if (observeBackEvents) {
+            navigationViewModel.backEvents.observe(viewLifecycleOwner, Observer {
+                navigationViewModel.navigateBack()
+            })
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.viach.navigationInViewModel.domain
 
+import com.viach.navigationInViewModel.domain.entity.Item
 import io.reactivex.Single
 
 interface ItemRepository {

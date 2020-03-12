@@ -5,21 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.viach.navigationInViewModel.R
 import com.viach.navigationInViewModel.navigation.view.NavigationViewModel
 import com.viach.navigationInViewModel.view.BaseFragment
-import javax.inject.Inject
 
 class SecondFragment : BaseFragment<SecondViewModel>() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    override val observeBackEvents = true
 
-    override lateinit var navigationViewModel: NavigationViewModel
-    override lateinit var viewModel: SecondViewModel
+    override val viewModelClass = SecondViewModel::class.java
 
     private val args: SecondFragmentArgs by navArgs()
 
@@ -41,8 +36,6 @@ class SecondFragment : BaseFragment<SecondViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         setupUi(view)
-
-        observeViewModel()
     }
 
     private fun setupUi(view: View) {
@@ -54,9 +47,4 @@ class SecondFragment : BaseFragment<SecondViewModel>() {
             .text = args.name
     }
 
-    private fun observeViewModel() {
-        navigationViewModel.backEvents.observe(viewLifecycleOwner, Observer {
-            navigationViewModel.navigateBack()
-        })
-    }
 }

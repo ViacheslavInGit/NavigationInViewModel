@@ -1,7 +1,7 @@
 package com.viach.navigationInViewModel.data
 
 import android.graphics.Color
-import com.viach.navigationInViewModel.domain.Item
+import com.viach.navigationInViewModel.domain.entity.Item
 import com.viach.navigationInViewModel.domain.ItemRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

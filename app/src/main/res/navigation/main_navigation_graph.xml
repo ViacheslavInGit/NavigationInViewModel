@@ -23,4 +23,10 @@
             android:defaultValue="-1"
             app:argType="integer" />
     </fragment>
+
+    <activity
+        android:id="@+id/neMainActivity"
+        android:name="com.viach.navigationInViewModel.view.nemain.NeMainActivity"
+        android:label="NeMainActivity" />
+
 </navigation>

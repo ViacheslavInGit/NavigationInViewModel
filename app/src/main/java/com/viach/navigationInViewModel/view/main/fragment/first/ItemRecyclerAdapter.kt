@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.viach.navigationInViewModel.R
-import com.viach.navigationInViewModel.domain.Item
+import com.viach.navigationInViewModel.domain.entity.Item
 
 class ItemRecyclerAdapter(
     private val onItemClickListener: (Item) -> Unit

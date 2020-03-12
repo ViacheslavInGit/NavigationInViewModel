@@ -1,4 +1,4 @@
-package com.viach.navigationInViewModel.domain
+package com.viach.navigationInViewModel.domain.entity
 
 data class Item(
     val id: Int,

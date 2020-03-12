@@ -24,3 +24,5 @@ class SecondScreen(bundle: Bundle) : Screen(R.id.secondFragment, bundle) {
     })
 
 }
+
+class NeMainScreen() : Screen(R.id.neMainActivity)

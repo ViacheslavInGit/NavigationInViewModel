@@ -1,23 +1,47 @@
 package com.viach.navigationInViewModel.view.main
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkBuilder
+import androidx.navigation.findNavController
 import com.viach.navigationInViewModel.R
-import com.viach.navigationInViewModel.navigation.view.NavigationViewModel
 import com.viach.navigationInViewModel.view.BaseActivity
+import com.viach.navigationInViewModel.view.NotificationDisplayer
+import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity<MainViewModel>() {
+
+    override val navController: NavController by lazy { findNavController(R.id.fragment_container) }
+
+    override val observeBackEvents = true
+
+    override val viewModelClass = MainViewModel::class.java
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    override lateinit var navigationViewModel: NavigationViewModel
+    lateinit var notificationDisplayer: NotificationDisplayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        navigationViewModel = viewModelFactory.create(NavigationViewModel::class.java)
+        viewModel.updateData()
+
+        viewModel.notifications.observe(this, Observer { notification ->
+
+            Timber.d("###notification ${notification.message}")
+
+
+            //through navigation
+            val intent = NavDeepLinkBuilder(this)
+                .setDestination(R.id.neMainActivity)
+                .setGraph(R.navigation.main_navigation_graph)
+                .createPendingIntent()
+
+            notificationDisplayer.showNotification(notification, intent)
+
+
+        })
     }
 }
