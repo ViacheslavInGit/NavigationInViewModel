@@ -14,7 +14,8 @@ class FakeItemRepository @Inject constructor() : ItemRepository {
 
     private val itemsSize = 1000
 
-    private val maxSubItems = 7
+    private val minSubItems = 3
+    private val maxSubItems = 15
 
     private val itemNames = listOf(
         "something",
@@ -29,28 +30,24 @@ class FakeItemRepository @Inject constructor() : ItemRepository {
     private val subItemNames = listOf(
         "some sub item",
         "another sub item",
-        "sub item #123",
-        "sub item #42",
+        "sub item",
         "cool sub item",
         "poor sub item",
-        "original sub item"
+        "original sub item",
+        "amazing sub item",
+        "sub item from France"
     )
 
     private val itemColors = listOf(
         Color.parseColor("#ffaaaa"),
         Color.parseColor("#aaffaa"),
         Color.parseColor("#aaaaff"),
-        Color.GRAY,
-        Color.LTGRAY
+        Color.parseColor("#888888"),
+        Color.parseColor("#cccccc")
     )
 
     private val subItemColors = listOf(
-//        Color.BLUE
-        Color.CYAN
-//        Color.GREEN,
-//        Color.RED,
-//        Color.YELLOW,
-//        Color.MAGENTA
+        Color.parseColor("#00ffff")
     )
 
     private val items = List(itemsSize) { i ->
@@ -58,9 +55,9 @@ class FakeItemRepository @Inject constructor() : ItemRepository {
             id = i.toLong(),
             name = itemNames[i % itemNames.size],
             color = itemColors[i % itemColors.size],
-            subItems = List(20 + 1 + i % maxSubItems) { subId ->
+            subItems = List(minSubItems + (i % (maxSubItems - minSubItems - 1))) { subId ->
                 SubItem(
-                    id = subId.toLong(),
+                    id = i * itemsSize + subId.toLong(),
                     name = subItemNames[subId % subItemNames.size],
                     color = subItemColors[subId % subItemColors.size]
                 )
@@ -79,6 +76,5 @@ class FakeItemRepository @Inject constructor() : ItemRepository {
             .fromCallable { items.find { it.id == id } }
             .map { it }
             .observeOn(AndroidSchedulers.mainThread())
-
 
 }

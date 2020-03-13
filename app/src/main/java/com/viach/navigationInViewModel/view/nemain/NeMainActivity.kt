@@ -19,8 +19,4 @@ class NeMainActivity : BaseActivity<NeMainViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nemain)
     }
-
-    override fun onResult(result: Any, requestCode: String) {
-        Timber.d("$result $requestCode")
-    }
 }

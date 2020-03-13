@@ -10,10 +10,8 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.viach.navigationInViewModel.R
-import com.viach.navigationInViewModel.domain.entity.SubItem
 import com.viach.navigationInViewModel.navigation.SecondScreen
 import com.viach.navigationInViewModel.view.BaseFragment
-import com.viach.navigationInViewModel.view.main.fragment.second.SecondFragment.Companion.SUB_ITEM_NAME_REQUEST_CODE
 
 class FirstFragment : BaseFragment<FirstViewModel>() {
 
@@ -27,13 +25,11 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
     private lateinit var selectedSubItemCardView: CardView
 
     private val recyclerAdapter = ItemRecyclerAdapter { item ->
-        val screen = SecondScreen(itemId = item.id)
-        navigationViewModel.navigateToForResult(screen, SUB_ITEM_NAME_REQUEST_CODE)
+        navigationViewModel.navigateTo(SecondScreen(item.id))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         navController = requireActivity().findNavController(R.id.fragment_container)
-
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.updateItems()
@@ -53,15 +49,19 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
         viewModel.itemsLiveData.observe(viewLifecycleOwner, Observer { items ->
             recyclerAdapter.setItems(items)
         })
+
+        viewModel.selectedSubItemVisibility.observe(viewLifecycleOwner, Observer { visible ->
+            selectedSubItemCardView.visibility = if (visible) View.VISIBLE else View.GONE
+        })
+
+        viewModel.selectedSubItem.observe(viewLifecycleOwner, Observer { subItem ->
+            selectedSubItemCardView.setCardBackgroundColor(subItem.color)
+            subItemNameTextView.text = subItem.toString()
+        })
     }
 
     override fun onResult(requestCode: String, result: Any) {
-        if (requestCode == SUB_ITEM_NAME_REQUEST_CODE) {
-            val subItem = result as SubItem
-
-            selectedSubItemCardView.visibility = View.VISIBLE
-            selectedSubItemCardView.setCardBackgroundColor(subItem.color)
-            subItemNameTextView.text = subItem.name
-        }
+        SecondScreen.getResult(requestCode, result)
+            ?.also { viewModel.updateSelectedItem(it) }
     }
 }
