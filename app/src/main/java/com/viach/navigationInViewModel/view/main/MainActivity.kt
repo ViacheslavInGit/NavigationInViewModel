@@ -15,7 +15,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     override val navController: NavController by lazy { findNavController(R.id.fragment_container) }
 
-    override val observeBackEvents = true
+    override val observeBackEvents = false
 
     override val viewModelClass = MainViewModel::class.java
 
@@ -30,9 +30,6 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
         viewModel.notifications.observe(this, Observer { notification ->
 
-            Timber.d("###notification ${notification.message}")
-
-
             //through navigation
             val intent = NavDeepLinkBuilder(this)
                 .setDestination(R.id.neMainActivity)
@@ -41,7 +38,10 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
             notificationDisplayer.showNotification(notification, intent)
 
-
         })
+    }
+
+    override fun onResult(result: Any, requestCode: String) {
+        Timber.d("$result $requestCode")
     }
 }

@@ -14,14 +14,9 @@
         android:label="SecondFragment">
 
         <argument
-            android:name="name"
-            android:defaultValue="no name"
-            app:argType="string" />
-
-        <argument
-            android:name="color"
-            android:defaultValue="-1"
-            app:argType="integer" />
+            android:name="itemId"
+            android:defaultValue="-1L"
+            app:argType="long" />
     </fragment>
 
     <activity

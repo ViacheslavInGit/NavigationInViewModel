@@ -5,9 +5,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import com.viach.navigationInViewModel.R
+import com.viach.navigationInViewModel.core.addItem
 import com.viach.navigationInViewModel.navigation.CommandExecutor
+import timber.log.Timber
 
 abstract class NavigationFragment : Fragment() {
 
@@ -15,16 +15,24 @@ abstract class NavigationFragment : Fragment() {
 
     abstract val observeBackEvents: Boolean
 
-    private val navController: NavController
-        get() = requireActivity().findNavController(R.id.fragment_container)
+    abstract val navController: NavController
+
+    abstract fun onResult(requestCode: String, result: Any)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        navController.createDeepLink()
-
         navigationViewModel.navigationCommands.observe(viewLifecycleOwner, Observer { command ->
-            command?.let { CommandExecutor.execute(it, navController) }
+            command?.let {
+                CommandExecutor.execute(
+                    command = it,
+                    navController = navController,
+                    lifecycleOwner = viewLifecycleOwner,
+                    observer = Observer { pair ->
+                        navigationViewModel.results.addItem(pair.first, pair.second)
+                    }
+                )
+            }
         })
 
         if (observeBackEvents) {
@@ -32,5 +40,14 @@ abstract class NavigationFragment : Fragment() {
                 navigationViewModel.navigateBack()
             })
         }
+
+        navigationViewModel.results.observe(viewLifecycleOwner, Observer { keyResultListPair ->
+            Timber.d("###result = $keyResultListPair")
+
+            if (keyResultListPair != null)
+                for (keyResult in keyResultListPair) {
+                    onResult(requestCode = keyResult.key, result = keyResult.value)
+                }
+        })
     }
 }

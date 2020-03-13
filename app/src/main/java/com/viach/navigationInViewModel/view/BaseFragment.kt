@@ -2,6 +2,10 @@ package com.viach.navigationInViewModel.view
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.lifecycle.ViewModelProvider
 import com.viach.navigationInViewModel.navigation.view.NavigationFragment
 import com.viach.navigationInViewModel.navigation.view.NavigationViewModel
@@ -19,6 +23,9 @@ abstract class BaseFragment<VM : BaseViewModel>
     protected lateinit var viewModel: VM
 
     abstract val viewModelClass: Class<VM>
+
+    @get:LayoutRes
+    abstract val layoutId: Int
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -39,4 +46,11 @@ abstract class BaseFragment<VM : BaseViewModel>
         navigationViewModel = viewModelFactory.create(NavigationViewModel::class.java)
         viewModel = viewModelFactory.create(viewModelClass)
     }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(layoutId, container, false)
+
 }

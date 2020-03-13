@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.viach.navigationInViewModel.R
 import com.viach.navigationInViewModel.domain.entity.Item
@@ -52,8 +53,8 @@ class ItemViewHolder(
         this.item = item
 
         itemView
-            .findViewById<View>(R.id.itemRoot)
-            .setBackgroundColor(item.color)
+            .findViewById<CardView>(R.id.itemRoot)
+            .setCardBackgroundColor(item.color)
 
         itemView
             .findViewById<TextView>(R.id.itemNameTextView)
