@@ -2,7 +2,8 @@ package com.viach.navigationInViewModel.view.main.fragment.first
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -22,6 +23,9 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
     override val viewModelClass = FirstViewModel::class.java
     override val layoutId = R.layout.fargment_first
 
+    private lateinit var subItemNameTextView: TextView
+    private lateinit var selectedSubItemCardView: CardView
+
     private val recyclerAdapter = ItemRecyclerAdapter { item ->
         val screen = SecondScreen(itemId = item.id)
         navigationViewModel.navigateToForResult(screen, SUB_ITEM_NAME_REQUEST_CODE)
@@ -33,6 +37,9 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.updateItems()
+
+        subItemNameTextView = view.findViewById(R.id.subItemNameTextView)
+        selectedSubItemCardView = view.findViewById(R.id.selectedSubItemCardView)
 
         view.findViewById<RecyclerView>(R.id.itemsRecyclerView).apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
@@ -51,7 +58,10 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
     override fun onResult(requestCode: String, result: Any) {
         if (requestCode == SUB_ITEM_NAME_REQUEST_CODE) {
             val subItem = result as SubItem
-            Toast.makeText(requireContext(), subItem.name, 1).show()
+
+            selectedSubItemCardView.visibility = View.VISIBLE
+            selectedSubItemCardView.setCardBackgroundColor(subItem.color)
+            subItemNameTextView.text = subItem.name
         }
     }
 }
