@@ -40,8 +40,4 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
         })
     }
-
-    override fun onResult(result: Any, requestCode: String) {
-        Timber.d("$result $requestCode")
-    }
 }

@@ -2,8 +2,6 @@ package com.viach.navigationInViewModel.di.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.viach.navigationInViewModel.navigation.di.DaggerNavigationViewModelProvider
-import com.viach.navigationInViewModel.navigation.di.NavigationViewModelProvider
 import com.viach.navigationInViewModel.navigation.view.NavigationViewModel
 import com.viach.navigationInViewModel.view.main.MainViewModel
 import com.viach.navigationInViewModel.view.main.fragment.first.FirstViewModel
@@ -20,10 +18,6 @@ interface ViewModelModule {
     @Binds
     @Singleton
     fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
-
-    @Binds
-    @Singleton
-    fun bindNavigationViewModelProvider(impl: DaggerNavigationViewModelProvider): NavigationViewModelProvider
 
     @Binds
     @IntoMap

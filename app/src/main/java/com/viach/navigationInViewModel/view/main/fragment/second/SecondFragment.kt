@@ -10,10 +10,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.viach.navigationInViewModel.R
 import com.viach.navigationInViewModel.core.addItem
-import com.viach.navigationInViewModel.domain.entity.SubItem
-import com.viach.navigationInViewModel.navigation.view.NavigationViewModel
+import com.viach.navigationInViewModel.navigation.SecondScreen.Companion.SUB_ITEM_REQUEST_CODE
 import com.viach.navigationInViewModel.view.BaseFragment
-import timber.log.Timber
 
 class SecondFragment : BaseFragment<SecondViewModel>() {
 
@@ -23,53 +21,37 @@ class SecondFragment : BaseFragment<SecondViewModel>() {
     override val viewModelClass = SecondViewModel::class.java
     override val layoutId = R.layout.fragment_second
 
-    private var selectedSubItem: SubItem? = null
-
-    private val recyclerAdapter = SubItemRecyclerAdapter { subItem ->
-        selectedSubItem = subItem
-    }
-
     private val args: SecondFragmentArgs by navArgs()
+
+    private lateinit var itemRoot: View
+    private lateinit var itemNameTextView: TextView
+    private lateinit var recyclerAdapter: SubItemRecyclerAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         navController = requireActivity().findNavController(R.id.fragment_container)
         super.onViewCreated(view, savedInstanceState)
 
-        navigationViewModel = viewModelFactory.create(NavigationViewModel::class.java)
-        viewModel = viewModelFactory.create(SecondViewModel::class.java)
-
         viewModel.updateItem(args.itemId)
 
-        view.findViewById<RecyclerView>(R.id.subItemRecyclerView).apply {
-            adapter = recyclerAdapter
+        recyclerAdapter = SubItemRecyclerAdapter(viewModel) {
+            navigationViewModel.results.addItem(SUB_ITEM_REQUEST_CODE, it)
         }
 
-        view.findViewById<View>(R.id.thumbFab)
-            .setOnClickListener {
-                selectedSubItem?.let {
-                    navigationViewModel.results.addItem(SUB_ITEM_NAME_REQUEST_CODE, it)
-                    navigationViewModel.navigateBack()
-                }
-            }
+        view.findViewById<RecyclerView>(R.id.subItemRecyclerView)
+            .apply { adapter = recyclerAdapter }
 
+        itemRoot = view.findViewById(R.id.itemRoot)
+        itemNameTextView = view.findViewById(R.id.itemNameTextView)
+
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
         viewModel.item.observe(viewLifecycleOwner, Observer { item ->
-            view.findViewById<View>(R.id.itemRoot)
-                .setBackgroundColor(item.color)
-
-            view.findViewById<TextView>(R.id.itemNameTextView)
-                .text = item.name
-
+            itemRoot.setBackgroundColor(item.color)
+            itemNameTextView.text = item.name
             recyclerAdapter.setSubItems(item.subItems)
         })
-    }
-
-    override fun onResult(requestCode: String, result: Any) {
-        Timber.d("$result $requestCode")
-    }
-
-
-    companion object {
-        const val SUB_ITEM_NAME_REQUEST_CODE = "SUB_ITEM_NAME_REQUEST_CODE"
     }
 
 }

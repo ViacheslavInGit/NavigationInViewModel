@@ -6,24 +6,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.viach.navigationInViewModel.R
 import com.viach.navigationInViewModel.domain.entity.SubItem
 
 class SubItemRecyclerAdapter(
+    private val secondViewModel: SecondViewModel,
     private val onSubItemClickListener: (SubItem) -> Unit
 ) : RecyclerView.Adapter<SubItemViewHolder>() {
 
-
-    val highlightedSubItemId = MutableLiveData<Long>()
 
     private var subItemList: List<SubItem> = emptyList()
 
     private val complexSubItemClickListener = object : (SubItem) -> Unit {
         override fun invoke(subItem: SubItem) {
             onSubItemClickListener(subItem)
-            highlightedSubItemId.value = subItem.id
+            secondViewModel.selectSutItem(subItem)
         }
     }
 
@@ -37,7 +39,11 @@ class SubItemRecyclerAdapter(
             .from(parent.context)
             .inflate(R.layout.item_sub_item, parent, false)
 
-        return SubItemViewHolder(holderView, complexSubItemClickListener, highlightedSubItemId)
+        return SubItemViewHolder(
+            holderView,
+            complexSubItemClickListener,
+            secondViewModel
+        )
     }
 
     override fun getItemCount() = subItemList.size
@@ -50,7 +56,7 @@ class SubItemRecyclerAdapter(
 class SubItemViewHolder(
     itemView: View,
     val onSubItemClickListener: (SubItem) -> Unit,
-    private val highlightedSubItemId: MutableLiveData<Long>
+    private val secondViewModel: SecondViewModel
 ) : RecyclerView.ViewHolder(itemView),
     LifecycleOwner {
 
@@ -58,32 +64,30 @@ class SubItemViewHolder(
 
     private val accentColor = Color.parseColor("#ffaa00")
 
-    private var lifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)
+    private var lifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this).apply {
+        currentState = Lifecycle.State.RESUMED
+    }
 
-    private var cardView: CardView? = null
+    private var subItemNameTextView: TextView = itemView.findViewById(R.id.subItemNameTextView)
+
+    private var cardView: CardView = itemView.findViewById(R.id.subItemRoot)
 
     init {
         itemView.setOnClickListener {
             requireNotNull(subItem).also { onSubItemClickListener(it) }
         }
 
-        highlightedSubItemId.observe(this, Observer {
-            updateHighlighting(it)
+        secondViewModel.selectedSubItem.observe(this, Observer {
+            updateHighlighting(it.id)
         })
     }
 
     fun bind(subItem: SubItem) {
         this.subItem = subItem
 
-        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
+        subItemNameTextView.text = subItem.toString()
 
-        itemView
-            .findViewById<TextView>(R.id.subItemNameTextView)
-            .text = subItem.name
-
-        cardView = itemView.findViewById(R.id.subItemRoot)
-
-        updateHighlighting(highlightedSubItemId.value)
+        updateHighlighting(secondViewModel.selectedSubItem.value?.id)
     }
 
     override fun getLifecycle(): Lifecycle = lifecycleRegistry
@@ -101,10 +105,12 @@ class SubItemViewHolder(
     }
 
     private fun highlight() {
-        cardView?.setCardBackgroundColor(accentColor)
+        cardView.setCardBackgroundColor(accentColor)
     }
 
     private fun unhighlight() {
-        cardView?.setCardBackgroundColor(requireNotNull(subItem).color)
+        subItem?.let {
+            cardView.setCardBackgroundColor(it.color)
+        }
     }
 }
