@@ -6,4 +6,6 @@ import io.reactivex.Single
 interface ItemRepository {
 
     fun getItems(): Single<List<Item>>
+
+    fun getItemById(id: Long): Single<Item>
 }

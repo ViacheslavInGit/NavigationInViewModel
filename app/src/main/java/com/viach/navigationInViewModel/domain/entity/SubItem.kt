@@ -1,8 +1,7 @@
 package com.viach.navigationInViewModel.domain.entity
 
-class Item(
+class SubItem (
     val id: Long,
     val name: String,
-    val color: Int,
-    val subItems: List<SubItem>
+    val color: Int
 )

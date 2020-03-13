@@ -12,15 +12,13 @@ class FirstScreen : Screen(R.id.firstFragment)
 class SecondScreen(bundle: Bundle) : Screen(R.id.secondFragment, bundle) {
 
     constructor(
-        name: String = "no name",
-        color: Int = -1
+        itemId: Long = -1L
     ) : this(Bundle().apply {
 
         //use to safe args transfer
-        val args = SecondFragmentArgs(name = name, color = color)
+        val args = SecondFragmentArgs(itemId = itemId)
 
-        putString("name", args.name)
-        putInt("color", args.color)
+        putLong("itemId", args.itemId)
     })
 
 }

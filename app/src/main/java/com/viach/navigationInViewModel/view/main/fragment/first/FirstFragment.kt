@@ -1,48 +1,43 @@
 package com.viach.navigationInViewModel.view.main.fragment.first
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.viach.navigationInViewModel.R
+import com.viach.navigationInViewModel.domain.entity.SubItem
 import com.viach.navigationInViewModel.navigation.SecondScreen
 import com.viach.navigationInViewModel.view.BaseFragment
+import com.viach.navigationInViewModel.view.main.fragment.second.SecondFragment.Companion.SUB_ITEM_NAME_REQUEST_CODE
 
 class FirstFragment : BaseFragment<FirstViewModel>() {
 
+    override lateinit var navController: NavController
+
     override val observeBackEvents = true
-
     override val viewModelClass = FirstViewModel::class.java
-
-    private lateinit var recyclerView: RecyclerView
+    override val layoutId = R.layout.fargment_first
 
     private val recyclerAdapter = ItemRecyclerAdapter { item ->
-        val screen = SecondScreen(name = item.name, color = item.color)
-        navigationViewModel.navigateTo(screen)
+        val screen = SecondScreen(itemId = item.id)
+        navigationViewModel.navigateToForResult(screen, SUB_ITEM_NAME_REQUEST_CODE)
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.updateItems()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fargment_first, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        navController = requireActivity().findNavController(R.id.fragment_container)
+
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView = view.findViewById(R.id.itemsRecyclerView)
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        recyclerView.adapter = recyclerAdapter
+        viewModel.updateItems()
+
+        view.findViewById<RecyclerView>(R.id.itemsRecyclerView).apply {
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            adapter = recyclerAdapter
+        }
 
         observeViewModel()
     }
@@ -53,4 +48,10 @@ class FirstFragment : BaseFragment<FirstViewModel>() {
         })
     }
 
+    override fun onResult(requestCode: String, result: Any) {
+        if (requestCode == SUB_ITEM_NAME_REQUEST_CODE) {
+            val subItem = result as SubItem
+            Toast.makeText(requireContext(), subItem.name, 1).show()
+        }
+    }
 }

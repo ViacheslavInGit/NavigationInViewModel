@@ -19,10 +19,7 @@ class MainViewModel @Inject constructor(
     fun updateData() {
         notificationRepository.observeNotifications()
             .subscribe(
-                {
-                    Timber.d("###notification receive $it")
-                    _notifications.value = it
-                },
+                { _notifications.value = it },
                 { Timber.e(it) }
             )
             .also { addDisposable(it) }
